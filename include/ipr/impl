@@ -783,7 +783,7 @@ namespace ipr {
       // Some declarations (e.g. parameters, base-classes, enumerators)
       // cannot be redeclared in their declarative regions.  Consequently
       // their decl-sets and overload sets are singleton, containing
-      // only the mater declarations.  Consequently, it seems
+      // only the master declarations.  Consequently, it seems
       // heavyweight space wasteful to deploy the general representation
       // machinery for them.  The class unique_decl<> implements the
       // specialization of Decl<> in those cases.
