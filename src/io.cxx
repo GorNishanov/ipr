@@ -1434,6 +1434,9 @@ namespace ipr
       void visit(const Template& t) override
       { pp << xpr_type_expr(t); }
 
+      void visit(const Decltype& t) override
+      { pp << xpr_type_expr(t); }
+
       void visit(const Type& t) override
       {
          // FIXME: Check.
