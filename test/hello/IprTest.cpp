@@ -33,6 +33,10 @@ struct value_dep_builder
   impl::Translation_unit tu {fac};
   Printer pp{std::cout};
 
+  ipr::Decl* X {};
+  ipr::Decl* a_fn{};
+  ipr::Decl* a_tmpl{};
+
 //    template<auto N> struct X {
 //        operator int() const { return 0; }
 //    };
@@ -50,6 +54,7 @@ struct value_dep_builder
     auto *X = tu.global_region()->declare_primary_map(fac.get_identifier("X"), templ);
     X->init = mapping;
     X->args.push_back(N);
+    this->X = X;
 
     auto *body = fac.make_class(mapping->params());
     mapping->body = body;
@@ -95,7 +100,7 @@ struct value_dep_builder
     auto& fn_type = fac.get_function(mapping->parameters.type(), int_type);
     mapping->constraint = &fn_type;
 
-    auto a_fn = owner->declare_fun(fac.get_identifier("a"), fn_type);
+    auto* a_fn = owner->declare_fun(fac.get_identifier("a"), fn_type);
     a_fn->init = mapping;
 
     auto* body = fac.make_block(mapping->parameters, int_type);
@@ -103,6 +108,8 @@ struct value_dep_builder
 
     auto& one = fac.get_literal(int_type, "1");
     body->add_stmt(fac.make_return(one));
+
+    this->a_fn = a_fn;
   }
 
   // template<typename T>
@@ -136,16 +143,22 @@ struct value_dep_builder
     auto* body = fac.make_block(mapping2->parameters, fn_ty.target());
     mapping2->body = body;
 
-    body->add_stmt(build_1st(*body, *t));
+    auto* n = build_n_decl(*body, *t);
+    body->add_stmt(n);
+    auto* x = build_x_decl(*body, *n);
+    body->add_stmt(x);
+    // build f(x) TODO: conv operator
+    auto* args = fac.make_expr_list();
+    args->push_back(fac.make_id_expr(*x));
+    auto* call = fac.make_call(*fac.make_id_expr(*a_fn), *args);
+    body->add_stmt(fac.make_return(*call));
   }
 
   //     constexpr auto n = sizeof sizeof t - sizeof(decltype(0));
-  Stmt* build_1st(impl::Block& body, ipr::Decl const& t) {
+  ipr::Decl const* build_n_decl(impl::Block& body, ipr::Decl const& t) {
     auto* x = fac.make_sizeof(*fac.make_sizeof(*fac.make_id_expr(t))); // FIXME: compute sizes and types
     auto& dclt = fac.get_decltype(fac.get_literal(fac.int_type(), "0"));
-    pp << xpr_expr(dclt);
     auto* y = fac.make_sizeof(dclt);
-    pp << xpr_expr(*y);
     auto* init = fac.make_minus(*x,*y);
 
     auto* n = body.region.declare_var(fac.get_identifier("n"), fac.get_auto());
@@ -153,6 +166,21 @@ struct value_dep_builder
 
     return n;
   }
+
+  //     X<n> x; // x: X<n> -- need to request specialization.
+  ipr::Decl const* build_x_decl(impl::Block& body, ipr::Decl const& n){
+    // build X<n>
+    //impl::Expr_list args; // BUG. Why it is allowed?
+    auto *args = fac.make_expr_list();
+    args->push_back(fac.make_id_expr(n));
+    auto& tmpl_id = fac.get_template_id(*fac.make_id_expr(*X), *args);
+    // FIXME: Need to do specialization.
+    auto& specialization = fac.get_as_type(tmpl_id);
+    auto *x = body.region.declare_var(fac.get_identifier("x"), specialization);
+    // TODO: a constructor call.
+    return x;
+  }
+
 
   value_dep_builder()
   {
