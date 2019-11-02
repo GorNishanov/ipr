@@ -2,6 +2,8 @@ cmake_minimum_required(
    VERSION 3.5
 )
 
+enable_testing()
+
 project(ipr
    VERSION 0.47
    LANGUAGES CXX
@@ -15,6 +17,11 @@ add_library(${PROJECT_NAME}
    src/utility.cxx
 )
 
+
+add_subdirectory(test)
+
+add_compile_options(-g)
+
 target_include_directories(${PROJECT_NAME}
    PUBLIC
       ${PROJECT_SOURCE_DIR}/include
@@ -26,7 +33,7 @@ set_target_properties(${PROJECT_NAME}
       CXX_STANDARD_REQUIRED ON
 	  CXX_EXTENSIONS OFF
 )
-				
+
 target_compile_options(${PROJECT_NAME}
    PRIVATE
       $<$<CXX_COMPILER_ID:MSVC>:

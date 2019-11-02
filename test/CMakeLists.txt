@@ -1,9 +1,11 @@
-cmake_minimum_required (VERSION 2.6)
-include_directories("$(PROJECT_SOURCE_DIR)/..")
-
-
-
-project (IprTest)
-add_executable(IprTest IprTest.cpp)
+add_executable(IprTest hello/IprTest.cpp)
 target_link_libraries(IprTest ipr)
+set_target_properties(IprTest
+   PROPERTIES
+      CXX_STANDARD 17
+      CXX_STANDARD_REQUIRED ON
+	  CXX_EXTENSIONS OFF
+)
+
+add_compile_options(-std=c++2a -Wall -g)
 
