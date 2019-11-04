@@ -17,10 +17,12 @@ add_library(${PROJECT_NAME}
    src/utility.cxx
 )
 
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "No build type selected, default to Debug")
+  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type (default Debug)" FORCE)
+endif()
 
 add_subdirectory(test)
-
-add_compile_options(-g)
 
 target_include_directories(${PROJECT_NAME}
    PUBLIC
