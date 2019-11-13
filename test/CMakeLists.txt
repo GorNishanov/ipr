@@ -1,5 +1,5 @@
 add_executable(IprTest hello/IprTest.cpp)
-add_executable(SemaTest sema/main.cpp)
+add_executable(SemaTest sema/SemaTest.cpp)
 
 target_link_libraries(SemaTest ipr)
 set_target_properties(SemaTest
