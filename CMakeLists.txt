@@ -39,7 +39,8 @@ set_target_properties(${PROJECT_NAME}
 target_compile_options(${PROJECT_NAME}
    PRIVATE
       $<$<CXX_COMPILER_ID:MSVC>:
-         /W2           # Usual warnings
+         /wd4267      # 'conversion' conversion from 'size_t' to 'int', possible loss of data
+         /wd4244      # 'conversion' conversion from '__int64' to 'int', possible loss of data
          /permissive-  # Turn on strict language conformance
          /EHsc         # Turn on exception handling semantics
       >

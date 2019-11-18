@@ -9,9 +9,7 @@ struct Parameter_list_builder {
     Sema& sema;
     impl::Mapping& mapping;
 
-    impl::Parameter* add_parameter(const ipr::Name& n, const ipr::Type& t) {
-        return sema.make_parameter(n, t, mapping);
-    }
+    impl::Parameter* add_parameter(const ipr::Name& n, const ipr::Type& t);
 };
 
 struct Sema : impl::Lexicon {
@@ -24,6 +22,10 @@ struct Sema : impl::Lexicon {
         return {*this, *make_mapping(*active_region)};
     }
 };
+
+impl::Parameter* Parameter_list_builder::add_parameter(const ipr::Name& n, const ipr::Type& t) {
+    return sema.make_parameter(n, t, mapping);
+}
 
 int main() {
     Printer pp(std::cout);
