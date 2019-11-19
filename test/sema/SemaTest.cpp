@@ -40,7 +40,7 @@ impl::Mapping& Parameter_list_builder::commit_template(const ipr::Type& t) {
   S: <T: typename> struct;
   */
 
-int main() {
+void SemaTest() {
     Printer pp(std::cout);
     Sema sema;
 
@@ -62,4 +62,22 @@ int main() {
     pp << "Hello, world\n";
 
     pp << *X << "\n";
+
+    pp << mapping.type().type() << "\n";
+}
+
+int main() {
+    Printer pp(std::cout);
+    Sema sema;
+
+    auto bld = sema.act_on_Parameter_list_start();
+    bld.add_parameter(sema.get_identifier("T"), sema.typename_type());
+    auto& mapping = bld.commit_template(sema.class_type());
+
+    auto* S = sema.active_region->declare_primary_map(sema.get_identifier("S"),
+                    static_cast<ipr::Template const&>(mapping.type()));
+    S->init = &mapping;
+
+    pp << "Hello, world\n";
+    pp << sema.tu << "\n";
 }

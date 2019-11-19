@@ -36,6 +36,23 @@ set_target_properties(${PROJECT_NAME}
 	  CXX_EXTENSIONS OFF
 )
 
+add_compile_options(
+   $<$<CXX_COMPILER_ID:MSVC>:
+      /wd4267       # 'conversion' conversion from 'size_t' to 'int', possible loss of data
+      /wd4244       # 'conversion' conversion from '__int64' to 'int', possible loss of data
+      /permissive-  # Turn on strict language conformance
+      /EHsc         # Turn on exception handling semantics
+   >
+   $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:
+      -Wall         # Turn on all useful warnings
+      -pedantic     # Turn on strict language conformance
+   >
+   $<$<CXX_COMPILER_ID:Clang>:
+      -Wno-overloaded-virtual                   # Too many false positives
+      -Wno-delete-non-abstract-non-virtual-dtor # System headers plagued
+   >
+)
+
 target_compile_options(${PROJECT_NAME}
    PRIVATE
       $<$<CXX_COMPILER_ID:MSVC>:
