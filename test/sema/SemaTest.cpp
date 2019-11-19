@@ -10,6 +10,7 @@ struct Parameter_list_builder {
     impl::Mapping& mapping;
 
     impl::Parameter* add_parameter(const ipr::Name& n, const ipr::Type& t);
+    impl::Mapping& commit_template(const ipr::Type& t);
 };
 
 struct Sema : impl::Lexicon {
@@ -27,8 +28,25 @@ impl::Parameter* Parameter_list_builder::add_parameter(const ipr::Name& n, const
     return sema.make_parameter(n, t, mapping);
 }
 
+impl::Mapping& Parameter_list_builder::commit_template(const ipr::Type& t) {
+    auto& templ = sema.get_template(mapping.parameters.type(), t);
+    mapping.constraint = &templ;
+    return mapping;
+}
+
+/*
+  template <typename T> struct S;
+  */
+
 int main() {
     Printer pp(std::cout);
     Sema sema;
+
+    auto bld = sema.act_on_Parameter_list_start();
+    bld.add_parameter(sema.get_identifier("T"), sema.typename_type());
+    auto& mapping = bld.commit_template(sema.class_type());
+
+
+
     pp << "Hello, world\n";
 }
