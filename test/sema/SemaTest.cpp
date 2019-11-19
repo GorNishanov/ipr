@@ -36,6 +36,8 @@ impl::Mapping& Parameter_list_builder::commit_template(const ipr::Type& t) {
 
 /*
   template <typename T> struct S;
+
+  S: <T: typename> struct;
   */
 
 int main() {
@@ -46,7 +48,18 @@ int main() {
     bld.add_parameter(sema.get_identifier("T"), sema.typename_type());
     auto& mapping = bld.commit_template(sema.class_type());
 
+    auto *body = sema.make_class(mapping.params());
+    mapping.body = body;
 
+    auto *X = sema.active_region->declare_primary_map(
+        sema.get_identifier("X"),
+        dynamic_cast<ipr::Template const&>(mapping.type()));
+    X->init = &mapping;
+
+    for (auto& p: mapping.params())
+        X->args.push_back(&p.name());
 
     pp << "Hello, world\n";
+
+    pp << *X << "\n";
 }
