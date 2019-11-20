@@ -385,7 +385,7 @@ namespace ipr
          {
             pp << token('(') << xpr_expr(e) << token(')');
          }
-         void visit(const Decl& d) override { d.name().accept(*this); }
+         void visit(const ipr::Decl& d) override { d.name().accept(*this); }
       };
 
       void
@@ -1685,7 +1685,7 @@ namespace ipr
                << newline_and_indent(-3);
          }
 
-         void visit(const Decl& d) override
+         void visit(const ipr::Decl& d) override
          {
             // These are declaration statements, so they end u
             // with a semicolon.
