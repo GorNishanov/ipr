@@ -1420,10 +1420,10 @@ namespace ipr {
 
 
       struct Named_map : impl::Decl<ipr::Named_map> {
-         const ipr::Udt* member_of;
+         // const ipr::Udt* member_of; -- UNUSED: Seems unused
          impl::Mapping* init;
          const ipr::Region* lexreg;
-         impl::Expr_list args;
+         //impl::Expr_list args; -- UNUSED: Seems unused
 
          Named_map();
 

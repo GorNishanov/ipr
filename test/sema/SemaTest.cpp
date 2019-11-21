@@ -56,9 +56,6 @@ void SemaTest() {
         dynamic_cast<ipr::Template const&>(mapping.type()));
     X->init = &mapping;
 
-    for (auto& p: mapping.params())
-        X->args.push_back(&p.name());
-
     pp << "Hello, world\n";
 
     pp << *X << "\n";

@@ -53,14 +53,15 @@ struct value_dep_builder
 
     auto *X = tu.global_region()->declare_primary_map(fac.get_identifier("X"), templ);
     X->init = mapping;
-    X->args.push_back(N);
+    auto *args = fac.make_expr_list();
+    args->push_back(N);
     this->X = X;
 
     auto *body = fac.make_class(mapping->params());
     mapping->body = body;
 
     auto& n = *fac.make_id_expr(*X);
-    auto& a = X->args;
+    auto& a = *args;
 
     body->id = &fac.get_template_id(n, a);
     X_add_conversion_to_int(body);
@@ -136,7 +137,7 @@ struct value_dep_builder
 
     auto *X = tu.global_region()->declare_primary_map(fac.get_identifier("g"), template_ty);
     X->init = mapping;
-    X->args.push_back(T);
+    //X->args.push_back(T);
 
     mapping->body = mapping2;
 

@@ -376,7 +376,7 @@ namespace ipr {
       // -- impl::Named_map --
       // ---------------------
 
-      Named_map::Named_map() : member_of(0), init(0), lexreg(0) { }
+      Named_map::Named_map() : init(0), lexreg(0) { } // UNUSED: member_of(0),
 
       const ipr::Named_map&
       Named_map::primary_named_map() const {
