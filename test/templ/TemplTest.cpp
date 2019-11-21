@@ -1,4 +1,6 @@
 #include <iostream>
+#include <ipr/impl>
+#include <ipr/io>
 
 //  1 template <typename T>
 //  2 struct S;
@@ -21,6 +23,28 @@
 // 19 template <>
 // 20 struct S<int>::Q<int> {};
 
+using namespace ipr;
+
+namespace {
+	struct builder
+	{
+		Printer pp{std::cout};
+
+		impl::Lexicon fac;
+		impl::Translation_unit tu {fac};
+		impl::Region *active_region = tu.global_region();
+
+		void build_forward_declaration_of_S();
+	};
+}
+//  1 template <typename T>
+//  2 struct S;
+
+void builder::build_forward_declaration_of_S() {
+
+}
+
 int main() {
 	std::cout << "Hi\n";
+	builder b;
 }
