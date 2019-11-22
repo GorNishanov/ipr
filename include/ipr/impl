@@ -1423,7 +1423,7 @@ namespace ipr {
          // const ipr::Udt* member_of; -- UNUSED: Seems unused
          impl::Mapping* init;
          const ipr::Region* lexreg;
-         //impl::Expr_list args; -- UNUSED: Seems unused
+         impl::Expr_list args;
 
          Named_map();
 
