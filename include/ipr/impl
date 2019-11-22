@@ -2125,8 +2125,8 @@ namespace ipr {
          impl::Namespace* make_namespace(const ipr::Region&);
          impl::Union* make_union(const ipr::Region&);
 
-         int make_fileindex(const ipr::String&);
-         const ipr::String& to_filename(int) const;
+         File_index get_fileindex(const ipr::String&);
+         const ipr::String& to_filename(File_index) const;
 
          const impl::Token* make_token(const ipr::String&,
                                        const Source_location&,
@@ -2137,7 +2137,7 @@ namespace ipr {
       private:
          void record_builtin_type(const ipr::As_type&);
 
-         using Filemap = stable_farm<impl::String>;
+         using Filemap = std::map<const ipr::String*, File_index>;
          Filemap filemap;
          stable_farm<impl::Token> tokens;
          type_factory types;

@@ -2203,6 +2203,22 @@ namespace ipr {
          return *finish_type(types.make_template(p, t));
       }
 
+      File_index
+      Lexicon::get_fileindex(const ipr::String& s) {
+         auto index = File_index{filemap.size()};
+         auto [it, inserted] = filemap.insert({&s, index});
+         return it->second;
+      }
+      const ipr::String&
+      Lexicon::to_filename(File_index index) const {
+         // FIXME: Probably create a reverse lookup vector.
+         for (auto const& entry: filemap)
+            if (entry.second == index)
+               return *entry.first;
+
+         throw std::logic_error("unknown file index provided");
+      }
+
       impl::Class*
       Lexicon::make_class(const ipr::Region& pr) {
          impl::Class* c = types.make_class(pr, anytype);

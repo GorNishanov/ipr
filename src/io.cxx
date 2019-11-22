@@ -1843,4 +1843,9 @@ namespace ipr
       return pp << xpr_expr(unit.global_namespace().scope());
    }
 
+   Printer&
+   operator<<(Printer& pp, const File_index& index) {
+      return pp << "File_" << static_cast<int>(index); // FIXME
+   }
+
 } // of namespace ipr
