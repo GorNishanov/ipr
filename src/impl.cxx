@@ -1061,7 +1061,7 @@ namespace ipr {
 
       const ipr::Product&
       Expr_list::type() const {
-         return seq;
+         return seq.type();
       }
 
       const ipr::Sequence<ipr::Expr>&
@@ -1131,12 +1131,13 @@ namespace ipr {
       // -------------------------------
       Scope::Scope(const ipr::Region& r, const ipr::Type& t) : region(r)
       {
-         decls.constraint = &t;
+         // decls.constraint = &t; FIXME, why?
+         // scope type is computed from its decls
       }
 
       const ipr::Type&
       Scope::type() const {
-         return decls;
+         return decls.type();
       }
 
       const ipr::Sequence<ipr::Decl>&

@@ -48,7 +48,7 @@ namespace {
 void builder::build_forward_declaration_of_S() {
    auto* mapping = fac.make_mapping(*active_region);
    auto* T = fac.make_parameter(fac.get_identifier("T"), fac.typename_type(), *mapping);
-   auto& templ = fac.get_template(mapping->parameters.type(), fac.class_type());
+   auto& templ = fac.get_template(mapping->parameters.type(fac), fac.class_type());
    mapping->constraint = &templ;
    pp << "template-type: " << templ << " " << templ.node_id << "\n";
 
@@ -67,7 +67,7 @@ void builder::build_forward_declaration_of_S() {
 void builder::build_definition_of_S() {
    auto* mapping = fac.make_mapping(*active_region);
    auto* T = fac.make_parameter(fac.get_identifier("T"), fac.typename_type(), *mapping);
-   auto& templ = fac.get_template(mapping->parameters.type(), fac.class_type());
+   auto& templ = fac.get_template(mapping->parameters.type(fac), fac.class_type());
    mapping->constraint = &templ;
    pp << "template-type: " << templ << " " << templ.node_id << "\n";
 

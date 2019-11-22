@@ -37,10 +37,10 @@ namespace ipr
          if (p == decls.end())
          {
             decls.push_back(&declaration);
-            return decls.size(); // Because disambiguations are 1-based
+            return (int)decls.size(); // Because disambiguations are 1-based
          }
          else
-            return p-decls.begin()+1; // Because disambiguations are 1-based
+            return (int)(p-decls.begin()+1); // Because disambiguations are 1-based
       }
    }; // of struct disambiguation_map_type
 

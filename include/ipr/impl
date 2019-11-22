@@ -78,7 +78,7 @@ namespace ipr {
 
          explicit ref_sequence(std::size_t n = 0) : Rep(n) { }
 
-         int size() const final { return Rep::size(); }
+         int size() const final { return (int)Rep::size(); }
 
          using Seq::operator[];
          using Seq::begin;
@@ -109,7 +109,7 @@ namespace ipr {
          val_sequence() : mark(this->before_begin()) { }
 
          int size() const final {
-            return std::distance(Impl::begin(), Impl::end());
+            return (int)std::distance(Impl::begin(), Impl::end());
          }
 
          template<typename... Args>
@@ -676,16 +676,20 @@ namespace ipr {
       // type of the nth declaration in the sequence.
 
       template<class Seq>
-      struct typed_sequence : impl::Type<ipr::Product>,
-                              ipr::Sequence<ipr::Type> {
+      struct typed_sequence : ipr::Sequence<ipr::Type> {
          Seq seq;
+         const ipr::Product *uniqued_type {};
 
          typed_sequence() { }
          explicit typed_sequence(const Seq& s) : seq(s) { }
 
-         const ipr::Sequence<ipr::Type>& operand() const final
-         {
-            return *this;
+         // Compute and unique the product type.
+         void commit(impl::Lexicon&);
+         const ipr::Product& type() const {
+            auto& result = *util::check(uniqued_type);
+            if (result.size() != size())
+               throw std::logic_error("sequence was modified after commit");
+            return result;
          }
          int size() const final { return seq.size(); }
          const ipr::Type& get(int i) const final
@@ -903,7 +907,6 @@ namespace ipr {
          int size() const { return seq.size(); }
          const rep& get(int i) const { return seq.get(i); }
 
-
          // Most nodes in homogeneous sequences need only
          // two or three arguments for their constructors.
          template<class T, class U>
@@ -931,13 +934,19 @@ namespace ipr {
          explicit
          homogeneous_scope(const ipr::Type& t)
          {
-            decls.constraint = &t;
+            // decls.constraint = &t; GORHACK -- why?
+            // type of the scope is computed from
+            // the sequence of declarations.
          }
 
          int size() const { return decls.size(); }
          const Member& get(int i) const { return decls.seq.get(i); }
 
-         const ipr::Product& type() const { return decls; }
+         const ipr::Product& type() const { return decls.type(); }
+         const ipr::Product& type(impl::Lexicon& l) {
+            decls.commit(l);
+            return decls.type();
+         }
 
          const ipr::Sequence<ipr::Decl>& members() const { return *this; }
 
@@ -986,6 +995,7 @@ namespace ipr {
          int size() const { return scope.size(); }
          const Member& get(int i) const { return scope.get(i); }
          const ipr::Product& type() const { return scope.type(); }
+         const ipr::Product& type(Lexicon& l) { return scope.type(l); }
 
          const ipr::Region& enclosing() const { return parent; }
          const ipr::Scope& bindings() const { return scope; }
@@ -2172,6 +2182,17 @@ namespace ipr {
 
          template<class T> T* finish_type(T*);
       };
+
+      template<class Seq>
+      void typed_sequence<Seq>::commit(Lexicon& l) {
+         if (uniqued_type)
+            throw std::logic_error("typed sequence was already committed");
+
+         ref_sequence<ipr::Type> ref_seq;
+         for (auto& entry: *this)
+            ref_seq.push_back(&entry);
+         uniqued_type = &l.get_product(ref_seq);
+      }
 
       template<typename T>
       struct unit_base : T {
