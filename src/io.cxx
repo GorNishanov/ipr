@@ -1717,6 +1717,16 @@ namespace ipr
                       *pp << token(':') << (int)locus.column << token(' ');
               }
           }
+
+          static void print(Printer& printer, const ipr::Node& node)
+          {
+              if (printer.print_locations)
+              {
+                  Constant_visitor<xpr::Location_printer> location_printer;
+                  location_printer.pp = &printer;
+                  node.accept(location_printer);
+              }
+          }
       };
    }
 
@@ -1726,12 +1736,7 @@ namespace ipr
       if(printer.needs_newline())
          printer << newline_and_indent();
 
-      if (printer.print_locations)
-      {
-         Constant_visitor<xpr::Location_printer> location_printer;
-         location_printer.pp = &printer;
-         x.stmt.accept(location_printer);
-      }
+      xpr::Location_printer::print(printer, x.stmt);
       xpr::Stmt impl(printer);
       x.stmt.accept(impl);
       return printer;
@@ -1862,6 +1867,7 @@ namespace ipr
       if (printer.needs_newline())
          printer << newline_and_indent();
 
+      xpr::Location_printer::print(printer, x.decl);
       xpr::Decl impl(printer);
       x.decl.accept(impl);
       if (x.needs_semicolon)
