@@ -1944,6 +1944,7 @@ namespace ipr {
               namespacetype(get_identifier("namespace"), cxx_linkage(), anytype),
 
               voidtype(get_identifier("void"), cxx_linkage(), anytype),
+              nullptrtype(get_identifier("decltype(nullptr)"), cxx_linkage(), anytype),
               booltype(get_identifier("bool"), cxx_linkage(), anytype),
               chartype(get_identifier("char"), cxx_linkage(), anytype),
               schartype(get_identifier("signed char"), cxx_linkage(), anytype),
@@ -1964,7 +1965,9 @@ namespace ipr {
               doubletype(get_identifier("double"), cxx_linkage(), anytype),
               longdoubletype(get_identifier("long double"),
                              cxx_linkage(), anytype),
-              ellipsistype(get_identifier("..."), cxx_linkage(), anytype)
+              ellipsistype(get_identifier("..."), cxx_linkage(), anytype),
+              functiontype(get_identifier("(function)"), cxx_linkage(), anytype),
+              variabletype(get_identifier("(variable)"), cxx_linkage(), anytype)
       {
          record_builtin_type(anytype);
          record_builtin_type(classtype);
@@ -1973,6 +1976,7 @@ namespace ipr {
          record_builtin_type(namespacetype);
 
          record_builtin_type(voidtype);
+         record_builtin_type(nullptrtype);
 
          record_builtin_type(booltype);
 
@@ -1997,6 +2001,8 @@ namespace ipr {
          record_builtin_type(longdoubletype);
 
          record_builtin_type(ellipsistype);
+         record_builtin_type(functiontype);
+         record_builtin_type(variabletype);
 
          // Make sure that zero index contains no valid file
          make_fileindex(get_string("<no-file>"));
@@ -2040,6 +2046,8 @@ namespace ipr {
       }
 
       const ipr::Type& Lexicon::void_type() const {  return voidtype;  }
+
+      const ipr::Type& Lexicon::nullptr_type() const { return nullptrtype; }
 
       const ipr::Type& Lexicon::bool_type() const { return booltype; }
 
@@ -2086,6 +2094,10 @@ namespace ipr {
       const ipr::Type& Lexicon::enum_type() const { return enumtype; }
 
       const ipr::Type& Lexicon::namespace_type() const { return namespacetype; }
+
+      const ipr::Type& Lexicon::function_type() const { return functiontype; }
+
+      const ipr::Type& Lexicon::variable_type() const { return variabletype; }
 
       template<class T>
       T* Lexicon::finish_type(T* t) {
