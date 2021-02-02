@@ -1338,7 +1338,8 @@ namespace ipr
       {
          pp << xpr_base_classes(c.bases())
             << token(' ')
-            << token('{')
+            << xpr_name(c.name())
+            << token(" {")
             << newline_and_indent(3)
             << xpr_expr(c.scope())
             << newline_and_indent(-3)
