@@ -1344,9 +1344,8 @@ namespace ipr
 
       void visit(const Class& c) override
       {
-         pp << xpr_base_classes(c.bases())
-            << token(' ')
-            << xpr_name(c.name())
+         pp << xpr_name(c.name())
+            << xpr_base_classes(c.bases())
             << token(" {")
             << newline_and_indent(3)
             << xpr_expr(c.scope())
